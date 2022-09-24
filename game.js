@@ -96,11 +96,16 @@ const pipe = {
     moved: true,
     pipes: [],
     draw: function () {
+        let indice = parseInt( Math.random()*10%2)
         for (let i = 0; i < this.pipes.length; i++) {
             let p = this.pipes[i];
-            sctx.drawImage(this.top.sprite, p.x, p.y)
-            sctx.drawImage(this.acid.sprite, p.x, p.y+150)
+            let elements = [this.acid.sprite,this.base.sprite]
+            
 
+            sctx.drawImage(this.top.sprite, p.x, p.y)
+            sctx.drawImage(elements[0], p.x - 3, p.y+400)
+
+            sctx.drawImage(elements[1], p.x - 3, p.y + parseFloat(this.top.sprite.height) + this.gap - 64)
             sctx.drawImage(this.bot.sprite, p.x, p.y + parseFloat(this.top.sprite.height) + this.gap )
         }
     },
@@ -230,6 +235,21 @@ const bird = {
         }
     }
 };
+
+const formula = {
+    acid: ["Ca(OH)\u2082","Mg(OH)\u2082","Mg(OH)\u2082","NH4OH","KOH","Ba(OH)\u2082","Al(OH)\u2083","Zn(OH)\u2082","AgOH","Fe(OH)\u2082","Fe(OH)\u2083"],
+    base: ["HF","HCI","HBr","HI","H\u2082S","HCN","H\u2082SO\u2084","H2SO\u2083","HCN","H\u2083PO\u2084","HPO\u2083","HCIO","HCIO\u2082","HCIO\u2084"],
+    draw: function(chemicalFormula){
+        //Draw formula
+        sctx.lineWidth = "1";
+        sctx.font = "50px Squada One";
+        sctx.fillStyle = "#FFFFFF";
+        sctx.strokeStyle = "#000000";
+        sctx.fillText(chemicalFormula, 0, 50);
+        sctx.strokeText(chemicalFormula, 0, 50);
+    }
+}
+
 const UI = {
     getReady: { sprite: new Image() },
     gameOver: { sprite: new Image() },
@@ -274,6 +294,7 @@ const UI = {
                 sctx.font = "35px Squada One";
                 sctx.fillText(this.score.curr, scrn.width / 2 - 5, 50);
                 sctx.strokeText(this.score.curr, scrn.width / 2 - 5, 50);
+                formula.draw("Mg(OH)\u2082")
                 break;
             case state.gameOver:
                 sctx.lineWidth = "2";
