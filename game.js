@@ -76,7 +76,7 @@ const gnd = {
     update: function () {
         if (state.curr != state.Play) return;
         this.x -= dx;
-        this.x = this.x % (this.sprite.width / 2);
+        this.x = this.x % (this.sprite.width / 3)  ;
     }
 };
 const bg = {
@@ -84,7 +84,7 @@ const bg = {
     x: 0,
     y: 0,
     draw: function () {
-        y = parseFloat(scrn.height - this.sprite.height);
+        y = parseFloat(scrn.height - this.sprite.height + 40);
         sctx.drawImage(this.sprite, this.x, y);
     }
 };
@@ -275,7 +275,7 @@ const bird = {
 };
 
 const formula = {
-    base: ["Ca(OH)\u2082", "Mg(OH)\u2082", "Mg(OH)\u2082", "NH4OH", "KOH", "Ba(OH)\u2082", "Al(OH)\u2083", "Zn(OH)\u2082", "AgOH", "Fe(OH)\u2082", "Fe(OH)\u2083"],
+    base: ["Ca(OH)\u2082", "Mg(OH)\u2082", "Mg(OH)\u2082", "NH\u2084OH", "KOH", "Ba(OH)\u2082", "Al(OH)\u2083", "Zn(OH)\u2082", "AgOH", "Fe(OH)\u2082", "Fe(OH)\u2083"],
     acid: ["HF", "HCI", "HBr", "HI", "H\u2082S", "HCN", "H\u2082SO\u2084", "H2SO\u2083", "H\u2083 PO\u2084", "HPO\u2083" , "HCIO"/*, "HCIO\u2082", "HCIO\u2084"*/],
     current: "",
     currentFormula: "",
