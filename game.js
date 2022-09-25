@@ -276,7 +276,7 @@ const bird = {
 
 const formula = {
     base: ["Ca(OH)\u2082", "Mg(OH)\u2082", "Mg(OH)\u2082", "NH\u2084OH", "KOH", "Ba(OH)\u2082", "Al(OH)\u2083", "Zn(OH)\u2082", "AgOH", "Fe(OH)\u2082", "Fe(OH)\u2083"],
-    acid: ["HF", "HCI", "HBr", "HI", "H\u2082S", "H\u2082SO\u2084", "H\u2082 SO\u2083", "H\u2083PO\u2084", "HPO\u2083" , "HCIO", "HCIO\u2082"/*, "HCIO\u2084"*/],
+    acid: ["HF", "HCI", "HBr", "HI", "H\u2082S", "H\u2082SO\u2084", "H\u2082 SO\u2083", "H\u2083PO\u2084", "H\u2082PO\u2083" , "HCIO", "HCIO\u2082"/*, "HCIO\u2084"*/],
     current: "",
     currentFormula: "",
     changeFormula: function() {
