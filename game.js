@@ -6,6 +6,7 @@ scrn.addEventListener("click", () => {
     switch (state.curr) {
         case state.getReady:
             state.curr = state.Play;
+            formula.changeFormula();
             SFX.start.play();
             break;
         case state.Play:
@@ -96,24 +97,40 @@ const pipe = {
     moved: true,
     pipes: [],
     draw: function () {
-        let indice = parseInt( Math.random()*10%2)
+        let indice = parseInt(Math.random() * 10 % 2)
         for (let i = 0; i < this.pipes.length; i++) {
             let p = this.pipes[i];
-            let elements = [this.acid.sprite,this.base.sprite]
-            
-
+            let elements = [this.acid.sprite, this.base.sprite]
+            p.acid.x = p.x - 3
+            p.acid.y = p.y + 400
             sctx.drawImage(this.top.sprite, p.x, p.y)
-            sctx.drawImage(elements[0], p.x - 3, p.y+400)
+            sctx.drawImage(elements[0], p.acid.x, p.acid.y)
 
-            sctx.drawImage(elements[1], p.x - 3, p.y + parseFloat(this.top.sprite.height) + this.gap - 64)
-            sctx.drawImage(this.bot.sprite, p.x, p.y + parseFloat(this.top.sprite.height) + this.gap )
+            p.base.x = p.x - 3
+            p.base.y = p.y + parseFloat(this.top.sprite.height) + this.gap - 64
+            sctx.drawImage(elements[1], p.base.x, p.base.y)
+            sctx.drawImage(this.bot.sprite, p.x, p.y + parseFloat(this.top.sprite.height) + this.gap)
+
+            // sctx.lineWidth = "1";
+            // sctx.font = "50px Squada One";
+            // sctx.fillStyle = "#FFFFFF";
+            // sctx.strokeStyle = "#000000";
+            // sctx.fillText("-------", p.acid.x, p.acid.y+65);
+            // sctx.strokeText("-------", p.acid.x, p.acid.y+65);
+            // sctx.lineWidth = "1";
+            // sctx.font = "50px Squada One";
+            // sctx.fillStyle = "#FFFFFF";
+            // sctx.strokeStyle = "#000000";
+            // sctx.fillText("-------", p.base.x, p.base.y+20);
+            // sctx.strokeText("-------", p.base.x, p.base.y+20);
+
         }
     },
     update: function () {
         if (state.curr != state.Play) return;
         //Gera os pipes
         if (frames % 100 == 0) {
-            this.pipes.push({ x: parseFloat(scrn.width), y: -210 * Math.min(Math.random() + 1, 1.8) });
+            this.pipes.push({ x: parseFloat(scrn.width), y: -210 * Math.min(Math.random() + 1, 1.8), acid: { x: 0, y: 0 }, base: { x: 0, y: 0 } });
         }
         //Diminui dx do pipe
         this.pipes.forEach(pipe => {
@@ -212,6 +229,8 @@ const bird = {
         let bird = this.animations[0].sprite;
         let x = pipe.pipes[0].x;
         let y = pipe.pipes[0].y;
+        let acid = pipe.pipes[0].acid;
+        let base = pipe.pipes[0].base;
         let r = bird.height / 4 + bird.width / 4;
         let roof = y + parseFloat(pipe.top.sprite.height);
         let floor = roof + pipe.gap;
@@ -223,30 +242,55 @@ const bird = {
                     return true;
                 }
 
-            }
-            else if (pipe.moved) {
-                UI.score.curr++;
-                SFX.score.play();
+            } else if (pipe.moved) {
+                if (acid.y + 75 > this.y) {
+                    if(formula.current == "acid"){
+                        UI.score.curr+=5;
+                        SFX.score.play();
+                    }else{
+                        SFX.hit.play();
+                        return true;
+                    }
+                    
+                }else if (base.y - 10 < this.y) {
+                    if(formula.current == "base"){
+                        UI.score.curr+=5;
+                        SFX.score.play();
+                    }else{
+                        SFX.hit.play();
+                        return true;
+                    }
+                } else {
+                    UI.score.curr++;
+                    SFX.score.play();
+                }
+                formula.changeFormula();
                 pipe.moved = false;
+
             }
-
-
 
         }
+
     }
 };
 
 const formula = {
-    acid: ["Ca(OH)\u2082","Mg(OH)\u2082","Mg(OH)\u2082","NH4OH","KOH","Ba(OH)\u2082","Al(OH)\u2083","Zn(OH)\u2082","AgOH","Fe(OH)\u2082","Fe(OH)\u2083"],
-    base: ["HF","HCI","HBr","HI","H\u2082S","HCN","H\u2082SO\u2084","H2SO\u2083","HCN","H\u2083PO\u2084","HPO\u2083","HCIO","HCIO\u2082","HCIO\u2084"],
-    draw: function(chemicalFormula){
+    base: ["Ca(OH)\u2082", "Mg(OH)\u2082", "Mg(OH)\u2082", "NH4OH", "KOH", "Ba(OH)\u2082", "Al(OH)\u2083", "Zn(OH)\u2082", "AgOH", "Fe(OH)\u2082", "Fe(OH)\u2083"],
+    acid: ["HF", "HCI", "HBr", "HI", "H\u2082S", "HCN", "H\u2082SO\u2084", "H2SO\u2083", "H\u2083 PO\u2084", "HPO\u2083" , "HCIO"/*, "HCIO\u2082", "HCIO\u2084"*/],
+    current: "",
+    currentFormula: "",
+    changeFormula: function() {
+        this.current = parseInt(Math.random() * 10 % 2)%2 ==0?"acid":"base";
+        this.currentFormula = this[this.current][parseInt(Math.random() * 10)]
+    },
+    draw: function () {
         //Draw formula
         sctx.lineWidth = "1";
-        sctx.font = "50px Squada One";
+        sctx.font = "45px Squada One";
         sctx.fillStyle = "#FFFFFF";
         sctx.strokeStyle = "#000000";
-        sctx.fillText(chemicalFormula, 0, 50);
-        sctx.strokeText(chemicalFormula, 0, 50);
+        sctx.fillText(this.currentFormula, 0, 50);
+        sctx.strokeText(this.currentFormula, 0, 50);
     }
 }
 
@@ -294,7 +338,7 @@ const UI = {
                 sctx.font = "35px Squada One";
                 sctx.fillText(this.score.curr, scrn.width / 2 - 5, 50);
                 sctx.strokeText(this.score.curr, scrn.width / 2 - 5, 50);
-                formula.draw("Mg(OH)\u2082")
+                formula.draw()
                 break;
             case state.gameOver:
                 sctx.lineWidth = "2";
